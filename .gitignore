@@ -43,7 +43,7 @@ nosetests.xml
 # Jetbrains
 *.iml
 
-# Visual Studion Code
+# Visual Studio Code
 .vscode
 
 # Git

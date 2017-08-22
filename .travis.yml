@@ -1,0 +1,21 @@
+language: python
+sudo: false
+python:
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+before_install:
+  - pip install --upgrade pip setuptools wheel
+
+install:
+  - pip install --upgrade pycodestyle pyflakes troposphere[policy]
+
+before_script:
+  - pycodestyle --version
+  - pycodestyle --show-source --show-pep8 .
+  - pyflakes .
+
+script:
+  - python setup.py test
