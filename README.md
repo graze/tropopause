@@ -15,7 +15,7 @@ This library has been developed and tested against Python 3.
 
 tropopause can be installed using the pip distribution system for Python by issuing:
 
-`$ pip install tropopause`
+`$ pip install graze-tropopause`
 
 Alternatively, you can run use setup.py to install by cloning this repository and issuing:
 
