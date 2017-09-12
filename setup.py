@@ -4,7 +4,7 @@ setup(
     name='graze-tropopause',
     version='1.0.2',
     description="lightweight troposphere wrapper",
-    long_description="lightweight troposphere wrapper to assist with boilerplate",
+    long_description="lightweight troposphere wrapper to aid with boilerplate",
     author="Graze Developers",
     author_email="developers@graze.com",
     url="https://github.com/graze/tropopause",
