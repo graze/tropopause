@@ -26,7 +26,7 @@ For development, consult [CONTRIBUTING.md](https://github.com/graze/tropopause/b
 
 ## Usage
 
-tropopause usage is very similar to that of troposphere, the principle difference is that the composite objects always expect the template object to be passed in as the second parameter.
+tropopause usage is similar to that of troposphere, the principle difference is that the composite objects always expect the template object to be passed in as the second parameter.
 
 ```python
 >>> from troposphere import Template
