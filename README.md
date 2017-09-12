@@ -13,7 +13,7 @@ The tropopause library extends troposphere by adding composite objects that crea
 
 This library has been developed and tested against Python 3.
 
-TODO: tropopause can be installed using the pip distribution system for Python by issuing:
+tropopause can be installed using the pip distribution system for Python by issuing:
 
 `$ pip install tropopause`
 

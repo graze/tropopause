@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tropopause',
-    version='0.0.2',
+    version='1.0.0',
     description="AWS CloudFormation creation library wrapper",
     author="Kris Holdich",
     author_email="kris.holdich@graze.com",
