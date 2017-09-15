@@ -7,7 +7,7 @@
 
 tropopause - a wrapper for [troposphere](https://github.com/cloudtools/troposphere) to create Cloudformation templates and abstracts away boilerplate.
 
-The tropopause library extends troposphere by adding composite objects that create the Cloudformation objects required to support specific tasks. 
+The tropopause library extends troposphere by adding composite objects that create the Cloudformation objects required to support specific tasks. Tags are inherited and applied to all taggable objects.
 
 ## Installation
 
@@ -62,6 +62,14 @@ tropopause usage is similar to that of troposphere, the principle difference is 
 ```
 
 ## Available Objects
+
+### tropopause
+* `Tags` - A replacement for troposphere Tags, concatenating tags deduplicates Keys, with precendence to the rightmost expression.
+```python
+>>> from tropopause import Tags
+>>> print((Tags(a='left') + Tags(a='right')).tags)
+[{'Value': 'right', 'Key': 'a'}]
+```
 
 ### tropopause.ec2
 * `InternetGatewayVPC` - Creates a VPC, an InternetGateway and the required VPCGatewayAttachment

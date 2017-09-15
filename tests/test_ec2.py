@@ -1,4 +1,5 @@
 import unittest
+from tropopause import Tags
 from tropopause.ec2 import InternetGatewayVPC
 from tropopause.ec2 import PublicSubnet, PrivateSubnet, SecureSubnet
 from troposphere import Ref, Template
@@ -21,13 +22,15 @@ class TestEc2(unittest.TestCase):
         test_vpc = InternetGatewayVPC(
             self.VpcName,
             template,
-            CidrBlock=self.CidrBlock
+            CidrBlock=self.CidrBlock,
+            Tags=Tags(Test='test')
         )
         PublicSubnet(
             self.PublicSubnetName,
             template,
             AvailabilityZone=self.AvailabilityZone,
             CidrBlock=self.CidrBlock,
+            Tags=Tags(Test='subtest', SubTest='subtest'),
             VpcId=Ref(test_vpc)
         )
         PrivateSubnet(
@@ -35,6 +38,7 @@ class TestEc2(unittest.TestCase):
             template,
             AvailabilityZone=self.AvailabilityZone,
             CidrBlock=self.CidrBlock,
+            Tags=Tags(Test='subtest', SubTest='subtest'),
             VpcId=Ref(test_vpc)
         )
         SecureSubnet(
@@ -42,6 +46,7 @@ class TestEc2(unittest.TestCase):
             template,
             AvailabilityZone=self.AvailabilityZone,
             CidrBlock=self.CidrBlock,
+            Tags=Tags(Test='subtest', SubTest='subtest'),
             VpcId=Ref(test_vpc)
         )
         return template
@@ -220,6 +225,110 @@ class TestEc2(unittest.TestCase):
         self.assertEqual(
             subnet_route_table_association.properties['SubnetId'].data['Ref'],
             subnet.name
+        )
+
+    def test_vpc_has_tags(self):
+        template = self._create_test_document()
+        vpc = template.resources[self.VpcName]
+        self.assertIsInstance(
+            vpc.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'test'},
+            vpc.properties['Tags'].tags
+        )
+
+    def test_internet_gateway_has_tags(self):
+        template = self._create_test_document()
+        internet_gateway = template.resources['internetgateway']
+        self.assertIsInstance(
+            internet_gateway.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'test'},
+            internet_gateway.properties['Tags'].tags
+        )
+
+    def test_public_subnet_has_tags(self):
+        template = self._create_test_document()
+        subnet = template.resources[self.PublicSubnetName]
+        self.assertIsInstance(
+            subnet.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'subtest'},
+            subnet.properties['Tags'].tags
+        )
+        self.assertIn(
+            {'Key': 'SubTest', 'Value': 'subtest'},
+            subnet.properties['Tags'].tags
+        )
+
+    def test_public_route_table_has_tags(self):
+        template = self._create_test_document()
+        route_table = template.resources[self.PublicSubnetName + 'routetable']
+        self.assertIsInstance(
+            route_table.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'subtest'},
+            route_table.properties['Tags'].tags
+        )
+        self.assertIn(
+            {'Key': 'SubTest', 'Value': 'subtest'},
+            route_table.properties['Tags'].tags
+        )
+
+    def test_private_subnet_has_tags(self):
+        template = self._create_test_document()
+        subnet = template.resources[self.PrivateSubnetName]
+        self.assertIsInstance(
+            subnet.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'subtest'},
+            subnet.properties['Tags'].tags
+        )
+        self.assertIn(
+            {'Key': 'SubTest', 'Value': 'subtest'},
+            subnet.properties['Tags'].tags
+        )
+
+    def test_private_route_table_has_tags(self):
+        template = self._create_test_document()
+        route_table = template.resources[self.PrivateSubnetName + 'routetable']
+        self.assertIsInstance(
+            route_table.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'subtest'},
+            route_table.properties['Tags'].tags
+        )
+        self.assertIn(
+            {'Key': 'SubTest', 'Value': 'subtest'},
+            route_table.properties['Tags'].tags
+        )
+
+    def test_secure_subnet_has_tags(self):
+        template = self._create_test_document()
+        subnet = template.resources[self.SecureSubnetName]
+        self.assertIsInstance(
+            subnet.properties['Tags'],
+            Tags
+        )
+        self.assertIn(
+            {'Key': 'Test', 'Value': 'subtest'},
+            subnet.properties['Tags'].tags
+        )
+        self.assertIn(
+            {'Key': 'SubTest', 'Value': 'subtest'},
+            subnet.properties['Tags'].tags
         )
 
 

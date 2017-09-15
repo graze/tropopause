@@ -1,4 +1,6 @@
-from troposphere import GetAtt, Ref
+from tropopause import Tags
+from troposphere import GetAtt, Ref, Template
+from troposphere import Tags as upstreamTags
 from troposphere.ec2 import EIP
 from troposphere.ec2 import Subnet
 from troposphere.ec2 import VPC
@@ -11,10 +13,13 @@ from troposphere.ec2 import VPCGatewayAttachment
 class InternetGatewayVPC(VPC):
     ''' Overrides the standard Troposphere VPC to deal with boilerplate '''
     def __init__(self, title, template, **kwargs):
+        if not ('Tags' in kwargs and isinstance(kwargs['Tags'], upstreamTags)):
+            kwargs['Tags'] = Tags()
         super(InternetGatewayVPC, self).__init__(title, template, **kwargs)
         internet_gateway = InternetGateway(
             'internetgateway',
-            template
+            template,
+            Tags=kwargs['Tags']
         )
         VPCGatewayAttachment(
             'vpcgatewayattachment',
@@ -24,8 +29,27 @@ class InternetGatewayVPC(VPC):
         )
 
 
+def AddTagsFromVPC(func):
+    """ helper to inject VPC tags into **kwargs """
+    def wrapper(*args, **kwargs):
+        tags = Tags()
+        if isinstance(args[-1], Template):
+            vpc = next(
+                i for i in args[-1].resources.items()
+                if isinstance(i[-1], VPC)
+            )[-1]
+        if isinstance(vpc, VPC):
+            tags = tags + vpc.properties['Tags']
+        if 'Tags' in kwargs and isinstance(kwargs['Tags'], Tags):
+            tags = tags + kwargs['Tags']
+        kwargs['Tags'] = tags
+        return(func(*args, **kwargs))
+    return wrapper
+
+
 class PublicSubnet(Subnet):
     ''' Overrides Subnet, creates a NAT gateway '''
+    @AddTagsFromVPC
     def __init__(self, title, template, **kwargs):
         super(PublicSubnet, self).__init__(title, template, **kwargs)
         eip = EIP(
@@ -44,7 +68,8 @@ class PublicSubnet(Subnet):
         route_table = RouteTable(
             title + 'routetable',
             template,
-            VpcId=self.properties['VpcId']
+            VpcId=self.properties['VpcId'],
+            Tags=kwargs['Tags']
         )
         Route(
             title + 'route',
@@ -63,13 +88,15 @@ class PublicSubnet(Subnet):
 
 class PrivateSubnet(Subnet):
     ''' Overrides Subnet, routes traffic through an existing NAT gateway '''
+    @AddTagsFromVPC
     def __init__(self, title, template, **kwargs):
         # TODO: depends on public NAT
         super(PrivateSubnet, self).__init__(title, template, **kwargs)
         route_table = RouteTable(
             title + 'routetable',
             template,
-            VpcId=self.properties['VpcId']
+            VpcId=self.properties['VpcId'],
+            Tags=kwargs['Tags']
         )
         Route(
             title + 'route',
@@ -91,5 +118,6 @@ class PrivateSubnet(Subnet):
 
 class SecureSubnet(Subnet):
     """ Overrides Subnet """
+    @AddTagsFromVPC
     def __init__(self, title, template, **kwargs):
         super(SecureSubnet, self).__init__(title, template, **kwargs)

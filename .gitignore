@@ -1,4 +1,5 @@
 *.py[cod]
+harness.py
 
 # C extensions
 *.so

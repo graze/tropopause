@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='graze-tropopause',
-    version='1.0.3',
+    version='1.0.4',
     description="lightweight troposphere wrapper",
     long_description="lightweight troposphere wrapper to aid with boilerplate",
     author="Graze Developers",
