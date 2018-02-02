@@ -1,5 +1,5 @@
 from ipaddress import ip_network
-from troposphere import Ref, Template
+from troposphere import Ref, Tags, Template
 from tropopause.ec2 import InternetGatewayVPC
 from tropopause.ec2 import PublicSubnet, PrivateSubnet, SecureSubnet
 
@@ -13,7 +13,8 @@ template.add_description('Example VPC')
 vpc = InternetGatewayVPC(
     'vpc',
     template,
-    CidrBlock=CidrBlock
+    CidrBlock=CidrBlock,
+    Tags=Tags(a='a')
 )
 
 zones = ['a', 'b', 'c']

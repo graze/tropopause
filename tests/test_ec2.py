@@ -9,7 +9,7 @@ from troposphere.ec2 import VPC, VPCGatewayAttachment
 
 
 class TestEc2(unittest.TestCase):
-    """ Unit Tests for tropopause.ec2 overrides """
+    """ Unit Tests for tropopause.ec2 """
     AvailabilityZone = 'us-east-1a'
     CidrBlock = '10.0.0.0/24'
     PublicSubnetName = 'publicsubnet'
