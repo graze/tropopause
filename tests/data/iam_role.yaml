@@ -1,0 +1,5 @@
+Statement:
+- Action: sts:AssumeRole
+  Effect: Allow
+  Principal: {Service: example.amazonaws.com}
+Version: '2012-10-17'

@@ -11,7 +11,7 @@ The tropopause library extends troposphere by adding composite objects that crea
 
 ## Installation
 
-This library has been developed and tested against Python 3.
+This library has been developed and tested against Python 3.4-3.6.
 
 tropopause can be installed using the pip distribution system for Python by issuing:
 
@@ -89,6 +89,18 @@ tropopause usage is similar to that of troposphere, the principle difference is 
 * `PublicSubnet` - Creates a Subnet, EIP and a NatGateway. Connects everything together and routes all traffic via an existing InternetGateway
 * `PrivateSubnet` - Creates a Subnet, attempts to find a Public Subnet in the same Availability Zone and then routes all traffic via an existing NatGateway
 * `SecureSubnet` - Creates a Subnet, does not route traffic to the Internet
+* `RoutedVPCPeeringConnection` - Creates a peering request with another VPC and all local routing
+* `SecurityGroupFromYaml` - Creates a Security Group from a YAML configuration file
+
+### tropopause.elasticloadbalancingv2
+
+* `SecureLoadBalancerWithListener` - Creates an Application Load Balancer and attaches a Listener with a dummy Target Group. TLS is assumed
+
+### tropopause.iam
+
+* `RoleFromYaml` - Creates an IAM Role from a YAML file
+* `PolicyFromYaml` - Creates an IAM Policy from a YAML file
+* `PolicyTypeYaml` - Creates an IAM PolicyType from a YAML file
 
 ## Licensing
 

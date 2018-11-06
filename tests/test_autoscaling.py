@@ -7,7 +7,7 @@ from troposphere import Ref, Template
 from troposphere.autoscaling import LaunchConfiguration, Tag
 
 
-class TestEc2(unittest.TestCase):
+class TestAutoscaling(unittest.TestCase):
     """ Unit Tests for tropopause.autoscaling """
 
     def _create_test_document(self):
@@ -38,16 +38,16 @@ class TestEc2(unittest.TestCase):
         self.assertIsInstance(lc.props['UserData'], tuple)
 
     def test_tag_inheritance_decorator_vpc(self):
-        t = self._create_test_document()
+        template = self._create_test_document()
         lc = LaunchConfigurationRPM(
             'launchconfig',
-            t,
+            template,
             ImageId='ami-12345678',
             InstanceType='t2.micro'
         )
         AutoScalingGroup(
             'asg',
-            t,
+            template,
             MinSize=0,
             MaxSize=1,
             LaunchConfigurationName=Ref(lc),
@@ -56,15 +56,15 @@ class TestEc2(unittest.TestCase):
             ]
         )
         self.assertIsInstance(
-             t.resources['asg'].properties['Tags'][0],
+             template.resources['asg'].properties['Tags'][0],
              Tag
         )
 
     def test_launch_configuration_rpm(self):
-        t = self._create_test_document()
+        template = self._create_test_document()
         lc = LaunchConfigurationRPM(
             'launchconfig',
-            t,
+            template,
             ImageId='ami-12345678',
             InstanceType='t2.micro'
         )

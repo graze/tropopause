@@ -1,0 +1,5 @@
+Statement:
+- Action: ['s3:ListObjects', 's3:GetObject']
+  Effect: Allow
+  Resource: ['arn:aws:s3:::example','arn:aws:s3:::example/*']
+Version: '2012-10-17'

@@ -2,7 +2,7 @@ import unittest
 from tropopause.validators import valid_url
 
 
-class TestEc2(unittest.TestCase):
+class TestValidators(unittest.TestCase):
     """ Unit Tests for tropopause.validators """
 
     def test_valid_urls(self):

@@ -93,7 +93,7 @@ def CommandsDecoratorS3(func):
     def wrapper(*args, **kwargs):
         if 'url' in kwargs:
             kwargs['commands'] = {
-                '01_bootstrap_from_http': {
+                '01_bootstrap_from_s3': {
                     'command': '/usr/bin/aws s3 cp '
                     + kwargs['url']
                     + ' - | /bin/sh'
@@ -111,6 +111,8 @@ class InitConfigFromHTTP(InitConfig):
     def __init__(self, *args, **kwargs):
         self.props['url'] = (str, True)
         super().__init__(*args, **kwargs)
+        self.props.pop('url')
+        self.properties.pop('url')
 
 
 class InitConfigFromS3(InitConfig):
@@ -121,3 +123,5 @@ class InitConfigFromS3(InitConfig):
     def __init__(self, *args, **kwargs):
         self.props['url'] = (str, True)
         super().__init__(*args, **kwargs)
+        self.props.pop('url')
+        self.properties.pop('url')

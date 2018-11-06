@@ -2,8 +2,10 @@ import unittest
 from tropopause import Tags
 from tropopause.ec2 import InternetGatewayVPC
 from tropopause.ec2 import PublicSubnet, PrivateSubnet, SecureSubnet
+from tropopause.ec2 import SecurityGroupFromYaml
 from troposphere import Ref, Template
 from troposphere.ec2 import EIP, InternetGateway, NatGateway, Route, RouteTable
+from troposphere.ec2 import SecurityGroup, SecurityGroupRule
 from troposphere.ec2 import Subnet, SubnetRouteTableAssociation
 from troposphere.ec2 import VPC, VPCGatewayAttachment
 
@@ -330,6 +332,78 @@ class TestEc2(unittest.TestCase):
             {'Key': 'SubTest', 'Value': 'subtest'},
             subnet.properties['Tags'].tags
         )
+
+    def test_routed_vpc_peer_connection(self):
+        pass
+
+    def test_security_group_egress_from_yaml(self):
+        template = self._create_test_document()
+        SecurityGroupFromYaml(
+            'sg',
+            template,
+            GroupDescription='test',
+            SecurityGroupEgress='tests/data/security-group.yaml'
+        )
+        security_group = template.resources['sg']
+        self.assertEqual(
+            len(security_group.properties['SecurityGroupEgress']), 8
+        )
+        for rule in security_group.properties['SecurityGroupEgress']:
+            self.assertIsInstance(rule, SecurityGroupRule)
+
+    def test_security_group_ingress_from_yaml(self):
+        template = self._create_test_document()
+        SecurityGroupFromYaml(
+            'sg',
+            template,
+            GroupDescription='example',
+            SecurityGroupIngress='tests/data/security-group.yaml'
+        )
+        security_group = template.resources['sg']
+        self.assertEqual(
+            len(security_group.properties['SecurityGroupIngress']), 8
+        )
+        for rule in security_group.properties['SecurityGroupIngress']:
+            self.assertIsInstance(rule, SecurityGroupRule)
+
+    def test_security_group(self):
+        template = self._create_test_document()
+        SecurityGroup(
+            'sg',
+            template,
+            GroupDescription='test',
+            SecurityGroupEgress=[
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort=22,
+                    ToPort=22,
+                    CidrIp="0.0.0.0/0"
+                )
+            ],
+            SecurityGroupIngress=[
+                SecurityGroupRule(
+                    IpProtocol='tcp',
+                    FromPort=22,
+                    ToPort=22,
+                    CidrIp="0.0.0.0/0"
+                )
+            ]
+        )
+        security_group = template.resources['sg']
+        for rule in security_group.properties['SecurityGroupEgress']:
+            self.assertIsInstance(rule, SecurityGroupRule)
+        for rule in security_group.properties['SecurityGroupIngress']:
+            self.assertIsInstance(rule, SecurityGroupRule)
+
+    def test_security_group_no_rules(self):
+        template = self._create_test_document()
+        SecurityGroup(
+            'sg',
+            template,
+            GroupDescription='test'
+        )
+        security_group = template.resources['sg']
+        self.assertIsInstance(security_group, SecurityGroup)
 
 
 if __name__ == '__main__':
